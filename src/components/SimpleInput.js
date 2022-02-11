@@ -1,54 +1,32 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 const SimpleInput = (props) => {
-  const nameInputRef = useRef();
   const [enteredName, setEnteredName] = useState("");
-  const [enteredNameIsValid, setEneteredNameIsValid] = useState(false);
   const [enteredNameTouched, setEnteredNameTouched] = useState(false);
 
-  // useEffect(() => {
-  //   if (enteredNameIsValid) {
-  //     console.log('Name input is Valid')
-  //   }
-  // }, [enteredNameIsValid])
+  const enteredNameIsValid = enteredName.trim() !== "";
+  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
 
   const namInputChangeHandler = (event) => {
     setEnteredName(event.target.value);
-
-    if (event.target.value.trim() !== "") {
-      setEneteredNameIsValid(true);
-    }
   };
-
   const nameInputBlurHandler = (event) => {
     setEnteredNameTouched(true);
-
-    if (enteredName.trim() === "") {
-      setEneteredNameIsValid(false);
-    }
   };
 
   const formSubmissionHandler = (event) => {
     event.preventDefault();
     setEnteredNameTouched(true);
 
-    if (enteredName.trim() === "") {
-      setEneteredNameIsValid(false);
+    if (!enteredNameIsValid) {
       return;
     }
-    setEneteredNameIsValid(true);
-
     console.log("with useState(): " + enteredName);
 
-    const enteredValue = nameInputRef.current.value;
-    console.log("with useRef(): " + enteredValue);
-
-    // nameInputRef.current.value = ''; // NOT IDEAL, DON'T MANIPULATE THE DOM
-
     setEnteredName("");
+    setEnteredNameTouched(false);
   };
 
-  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
   const nameInputClass = nameInputIsInvalid
     ? "form-control invalid"
     : "form-control";
@@ -58,7 +36,6 @@ const SimpleInput = (props) => {
       <div className={nameInputClass}>
         <label htmlFor="name">Your Name</label>
         <input
-          ref={nameInputRef}
           type="text"
           id="name"
           onChange={namInputChangeHandler}
